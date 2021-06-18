@@ -1,5 +1,8 @@
+//DEPENDENCIES
 const mysql = require('mysql');
 
+
+//-----SERVER SETTINGS-----
 const connection = mysql.createConnection({
     host: 'localhost',
 
@@ -23,5 +26,6 @@ const connection = mysql.createConnection({
 connection.connect((err)=>{
     if(err) throw err;
     console.log(`Connected as id ${connection.threadId}\n`);
+    //Show
     //readEmployees();
 })
