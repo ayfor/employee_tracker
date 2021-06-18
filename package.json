@@ -1,0 +1,29 @@
+{
+  "name": "employee_tracker",
+  "version": "1.0.0",
+  "description": "simple node app for tracking employees",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayfor/employee_tracker.git"
+  },
+  "keywords": [
+    "node",
+    "sql",
+    "inquirer"
+  ],
+  "author": "ayfor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ayfor/employee_tracker/issues"
+  },
+  "homepage": "https://github.com/ayfor/employee_tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.1.1",
+    "mysql": "^2.18.1"
+  }
+}
