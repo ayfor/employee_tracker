@@ -17,21 +17,26 @@ const connection = mysql.createConnection({
 
 const readEmployees = () => {
     //Construct query for complete employee information
-    let query = 'SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, employee.role_id, employee.manager_id FROM employee ';
+    let query = 'SELECT employee.id, employee.first_name AS FirstName, employee.last_name AS LastName, manager.first_name AS ManagerFirstName, manager.last_name AS ManagerLastName, role.title AS Title , role.salary AS Salary FROM employee ';
 
-    query += ' INNER JOIN role ON (employee.role_id = role.id) ';
-
-    //query += ' INNER JOIN employee ON (employee.manger_id = employee.id)'
+    query += 'LEFT OUTER JOIN employee manager ON (employee.manager_id = manager.id)'
+    
+    query += 'INNER JOIN role ON (employee.role_id = role.id) ';
 
     connection.query(query,(err, res)=>{
         if(err) throw err;
         let response = JSON.stringify(res);
 
+        
+
         let responseArray = JSON.parse(response);
 
+        //console.log(responseArray);
+
         responseArray.forEach(element => {
-            if(element.manager_id===null){
-                element.manager_id = '[NONE]';
+            if(element.ManagerFirstName === null){
+                element.ManagerFirstName = '-';
+                element.ManagerLastName = '-';
             }
         });
 
