@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
     database: 'employees_db'
 });
 
-const readEmployees = () => {
+const showEmployees = () => {
     //Construct query for complete employee information
     let query = 'SELECT employee.id, employee.first_name AS FirstName, employee.last_name AS LastName, manager.first_name AS ManagerFirstName, manager.last_name AS ManagerLastName, role.title AS Title , role.salary AS Salary FROM employee ';
 
@@ -27,12 +27,9 @@ const readEmployees = () => {
         if(err) throw err;
         let response = JSON.stringify(res);
 
-        
-
         let responseArray = JSON.parse(response);
 
-        //console.log(responseArray);
-
+        //reformat null entries
         responseArray.forEach(element => {
             if(element.ManagerFirstName === null){
                 element.ManagerFirstName = '-';
@@ -44,9 +41,35 @@ const readEmployees = () => {
     });
 };
 
+const showRoles = () => {
+    let query = 'SELECT * FROM role';
+
+    connection.query(query, (err, res)=>{
+        let response = JSON.stringify(res);
+
+        let responseArray = JSON.parse(response);
+
+        console.table(responseArray);
+    })
+}
+
+const showDepartments = () => {
+    let query = 'SELECT * FROM department';
+
+    connection.query(query, (err, res)=>{
+        let response = JSON.stringify(res);
+
+        let responseArray = JSON.parse(response);
+
+        console.table(responseArray);
+    })
+}
+
 connection.connect((err)=>{
     if(err) throw err;
     console.log(`Connected as id ${connection.threadId}\n`);
     //Show employees
-    readEmployees();
+    showEmployees();
+    showRoles();
+    showDepartments();
 })
