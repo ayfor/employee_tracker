@@ -100,8 +100,8 @@ const updateRoles = () => {
                     currentRoleTitles.push(element.title)
                 });  
 
-                console.log(currentRoles);
-                console.log(currentRoleTitles);
+                // console.log(currentRoles);
+                // console.log(currentRoleTitles);
             }
         }
     );
@@ -127,8 +127,8 @@ const updateDepartments = () => {
                     currentDepartmentNames.push(element.name)
                 });  
                  
-                console.log(currentDepartments);
-                console.log(currentDepartmentNames);
+                // console.log(currentDepartments);
+                // console.log(currentDepartmentNames);
             }
         }
     );
@@ -174,6 +174,9 @@ const runInquiries = () => {
                 break;
             case 'Add Department':
                 addDepartment();
+                break;
+            case 'Add Role':
+                addRole();
                 break;
             case '[Exit]':
                 return;
@@ -243,6 +246,52 @@ const addDepartment = () => {
     .then(() => {runInquiries()});
 }
 
+const addRole = () => {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            message: "What is the name of the role?",
+            name: 'roleTitle',
+        },
+        {
+            type: 'input',
+            message: "What is the salary of the role?",
+            name: 'roleSalary',
+        },
+        {
+            type: 'list',
+            message: "What department is the role a part of?",
+            choices: currentDepartmentNames,
+            name: 'roleDepartment',
+        },
+        
+
+    ])
+    .then((answers)=>{
+        if((answers.roleTitle && !(answers.roleTitle===""))&&(answers.roleSalary && !(answers.roleSalary===""))){
+
+            connection.query(
+                'INSERT INTO role SET ?',
+                {
+                    title: answers.roleTitle,
+                    salary: answers.roleSalary,
+                    department_id: getDepartmentId(answers.roleDepartment)
+                },
+                (err, res) => {
+                  if (err) throw err;
+                  console.log(`Role added!\n`);
+                }
+            );
+
+
+        }else{
+            console.error("Invalid Deparment Name. Please start the application again.");
+        }
+    })
+    .then(() => {runInquiries()});
+}
+
 //-----HELPER FUNCTIONS-----
 
 const updatePersistingData = () => {
@@ -250,6 +299,14 @@ const updatePersistingData = () => {
     updateRoles();
 }
 
+const getDepartmentId = (departmentName) => {
+
+    for (const department of currentDepartments) {
+        if(departmentName === department.name){
+            return department.id;
+        }
+    }
+}
 
 //-----INIT-----
 
