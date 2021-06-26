@@ -1,6 +1,7 @@
 //DEPENDENCIES
 const mysql = require('mysql');
 const cTable = require('console.table');
+const inquirer = require('inquirer');
 
 
 //-----SERVER SETTINGS-----
@@ -54,7 +55,7 @@ const showRoles = () => {
 }
 
 const showDepartments = () => {
-    let query = 'SELECT * FROM department';
+    let query = 'SELECT department.id AS ID, department.name AS Department_Name FROM department';
 
     connection.query(query, (err, res)=>{
         let response = JSON.stringify(res);
@@ -68,8 +69,38 @@ const showDepartments = () => {
 connection.connect((err)=>{
     if(err) throw err;
     console.log(`Connected as id ${connection.threadId}\n`);
-    //Show employees
-    showEmployees();
-    showRoles();
-    showDepartments();
+    
 })
+
+
+const runInquiries = () => {
+    inquirer
+    .prompt({
+        name:'action',
+        type:'list',
+        message:'What would you like to do?',
+        choices: [
+            'View Employees',
+            'View Deparments',
+            'View Roles'
+        ]
+    })
+    .then((answer)=>{
+        switch (answer.action) {
+            case 'View Employees':
+                showEmployees();
+                break;
+            
+            case 'View Deparments':
+                showDepartments();
+                break;
+            
+            case 'View Roles':
+                showRoles();
+                break;
+                
+            default:
+                break;
+        }
+    })
+}
