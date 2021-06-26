@@ -20,7 +20,11 @@ const connection = mysql.createConnection({
 
 var currentRoles = [];
 
+var currentRoleTitles = [];
+
 var currentDepartments = [];
+
+var currentDepartmentNames = [];
 
 //-----SERVER REQUESTS-----
 
@@ -79,7 +83,7 @@ const showDepartments = () => {
 const updateRoles = () => {
 
     connection.query(
-        'SELECT title FROM role',
+        'SELECT * FROM role',
         (err, res) => {
             if(err){
                 throw err;
@@ -88,20 +92,55 @@ const updateRoles = () => {
                 let responseArray = JSON.parse(response);
 
                 currentRoles = [];
+                currentRoleTitles = [];
+
+                currentRoles = responseArray;
 
                 responseArray.forEach(element => {
-                    currentRoles.push(element.title)
-                });   
+                    currentRoleTitles.push(element.title)
+                });  
+
+                console.log(currentRoles);
+                console.log(currentRoleTitles);
             }
         }
     );
 }
 
-const
+const updateDepartments = () => {
+
+    connection.query(
+        'SELECT * FROM department',
+        (err, res) => {
+            if(err){
+                throw err;
+            }else{
+                let response = JSON.stringify(res);
+                let responseArray = JSON.parse(response);
+
+                currentDepartments = [];
+                currentDepartmentNames = [];
+
+                currentDepartments = responseArray;
+
+                responseArray.forEach(element => {
+                    currentDepartmentNames.push(element.name)
+                });  
+                 
+                console.log(currentDepartments);
+                console.log(currentDepartmentNames);
+            }
+        }
+    );
+}
+
 
 //-----INQUIRER PROMPTS-----
 
 const runInquiries = () => {
+
+    updatePersistingData();
+
     inquirer
     .prompt({
         name:'action',
@@ -204,12 +243,18 @@ const addDepartment = () => {
     .then(() => {runInquiries()});
 }
 
+//-----HELPER FUNCTIONS-----
+
+const updatePersistingData = () => {
+    updateDepartments();
+    updateRoles();
+}
+
 
 //-----INIT-----
 
 connection.connect((err)=>{
     if(err) throw err;
     console.log(`Connected as id ${connection.threadId}\n`);
-    updateRoles();
     runInquiries();
 })
