@@ -16,6 +16,12 @@ const connection = mysql.createConnection({
     database: 'employees_db'
 });
 
+//-----PERSISTING DATA-----
+
+var currentRoles = [];
+
+var currentDepartments = [];
+
 //-----SERVER REQUESTS-----
 
 const showEmployees = () => {
@@ -68,6 +74,31 @@ const showDepartments = () => {
     })
 }
 
+//QUERIES FOR UPDATING PERSISTING DATA
+
+const updateRoles = () => {
+
+    connection.query(
+        'SELECT title FROM role',
+        (err, res) => {
+            if(err){
+                throw err;
+            }else{
+                let response = JSON.stringify(res);
+                let responseArray = JSON.parse(response);
+
+                currentRoles = [];
+
+                responseArray.forEach(element => {
+                    currentRoles.push(element.title)
+                });   
+            }
+        }
+    );
+}
+
+const
+
 //-----INQUIRER PROMPTS-----
 
 const runInquiries = () => {
@@ -78,8 +109,11 @@ const runInquiries = () => {
         message:'What would you like to do?',
         choices: [
             'View Employees',
-            'View Deparments',
-            'View Roles'
+            'View Departments',
+            'View Roles',
+            'Add Department',
+            'Add Role',
+            '[Exit]'
         ]
     })
     .then((answer)=>{
@@ -88,24 +122,94 @@ const runInquiries = () => {
                 showEmployees();
                 break;
             
-            case 'View Deparments':
+            case 'View Departments':
                 showDepartments();
                 break;
             
             case 'View Roles':
                 showRoles();
                 break;
+            
+            case 'Add Employee':
+                addEmployee();
+                break;
+            case 'Add Department':
+                addDepartment();
+                break;
+            case '[Exit]':
+                return;
 
             default:
                 break;
         }
     })
+    
 }
+
+const addEmployee = () => {
+    let roles = []
+
+    console.log('Adding Employee...');
+    inquirer
+    .prompt(
+        {
+            type: 'input',
+            message: "What is the employee's first name?",
+            name: 'firstName',
+        },
+        {
+            type: 'input',
+            message: "What is the employee's last name?",
+            name: 'lastName',
+        },
+        {
+            type: 'list', 
+            message: "What is the employee's role?",
+            choices: roles,
+            name: 'role'
+        }
+
+
+    )
+}
+
+const addDepartment = () => {
+    inquirer
+    .prompt(
+        {
+            type: 'input',
+            message: "What is the name of the department?",
+            name: 'departmentName',
+        }
+    )
+    .then((answers)=>{
+        if(answers.departmentName && !(answers.departmentName==="")){
+
+            connection.query(
+                'INSERT INTO department SET ?',
+                {
+                  name: answers.departmentName
+                },
+                (err, res) => {
+                  if (err) throw err;
+                  console.log(`Department added!\n`);
+                }
+            );
+
+
+        }else{
+            console.error("Invalid Deparment Name. Please start the application again.");
+        }
+    })
+    .then(() => {runInquiries()});
+}
+
 
 //-----INIT-----
 
 connection.connect((err)=>{
     if(err) throw err;
     console.log(`Connected as id ${connection.threadId}\n`);
-    
+    updateRoles();
+    runInquiries();
 })
