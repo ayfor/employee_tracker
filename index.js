@@ -55,7 +55,8 @@ const showEmployees = () => {
         });
 
         console.table(responseArray);
-    });
+    })
+
 };
 
 const showRoles = () => {
@@ -68,6 +69,7 @@ const showRoles = () => {
 
         console.table(responseArray);
     })
+
 }
 
 const showDepartments = () => {
@@ -80,6 +82,7 @@ const showDepartments = () => {
 
         console.table(responseArray);
     })
+
 }
 
 //QUERIES FOR UPDATING PERSISTING DATA
@@ -186,7 +189,6 @@ const runInquiries = () => {
             'Add Department',
             'Add Role',
             'Update Employee Role',
-            '[Exit]'
         ]
     })
     .then((answer)=>{
@@ -215,12 +217,14 @@ const runInquiries = () => {
             case 'Update Employee Role':
                 updateEmployeeRole();
                 break;
-            case '[Exit]':
-                return;
+            
             default:
                 break;
         }
     })
+    .then(() => {runInquiries()});
+
+
     
 }
 
@@ -275,7 +279,6 @@ const addEmployee = () => {
             console.error("Invalid Employee Name. Please start the application again.");
         }
     })
-    .then(() => {runInquiries()});
 }
 
 const addDepartment = () => {
@@ -306,7 +309,6 @@ const addDepartment = () => {
             console.error("Invalid Deparment Name. Please start the application again.");
         }
     })
-    .then(() => {runInquiries()});
 }
 
 const addRole = () => {
@@ -352,7 +354,6 @@ const addRole = () => {
             console.error("Invalid Role Name. Please start the application again.");
         }
     })
-    .then(() => {runInquiries()});
 }
 
 const updateEmployeeRole = () => {
@@ -391,7 +392,6 @@ const updateEmployeeRole = () => {
         );
 
     })
-    .then(() => {runInquiries()});
 
 }
 
