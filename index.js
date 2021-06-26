@@ -54,7 +54,9 @@ const showEmployees = () => {
             }
         });
 
+        console.log(`\n`)
         console.table(responseArray);
+        runInquiries();
     })
 
 };
@@ -67,7 +69,9 @@ const showRoles = () => {
 
         let responseArray = JSON.parse(response);
 
+        console.log(`\n`)
         console.table(responseArray);
+        runInquiries();
     })
 
 }
@@ -80,7 +84,9 @@ const showDepartments = () => {
 
         let responseArray = JSON.parse(response);
 
+        console.log(`\n`)
         console.table(responseArray);
+        runInquiries();
     })
 
 }
@@ -105,7 +111,8 @@ const updateRoles = () => {
 
                 responseArray.forEach(element => {
                     currentRoleTitles.push(element.title)
-                });  
+                });
+                
             }
         }
     );
@@ -130,6 +137,7 @@ const updateDepartments = () => {
                 responseArray.forEach(element => {
                     currentDepartmentNames.push(element.name)
                 });  
+
             }
         }
     );
@@ -163,7 +171,6 @@ const updateEmployees = () => {
 
                 //Add null selection to current employee names
                 currentEmployeeNames.push("None");
-                
             }
         }
     );
@@ -222,7 +229,6 @@ const runInquiries = () => {
                 break;
         }
     })
-    .then(() => {runInquiries()});
 
 
     
@@ -279,6 +285,8 @@ const addEmployee = () => {
             console.error("Invalid Employee Name. Please start the application again.");
         }
     })
+    .then(() => {runInquiries()});
+
 }
 
 const addDepartment = () => {
@@ -309,6 +317,9 @@ const addDepartment = () => {
             console.error("Invalid Deparment Name. Please start the application again.");
         }
     })
+    .then(() => {runInquiries()});
+
+
 }
 
 const addRole = () => {
@@ -354,6 +365,8 @@ const addRole = () => {
             console.error("Invalid Role Name. Please start the application again.");
         }
     })
+    .then(() => {runInquiries()});
+
 }
 
 const updateEmployeeRole = () => {
@@ -392,6 +405,8 @@ const updateEmployeeRole = () => {
         );
 
     })
+    .then(() => {runInquiries()});
+
 
 }
 
