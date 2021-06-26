@@ -185,6 +185,7 @@ const runInquiries = () => {
             'Add Employee',
             'Add Department',
             'Add Role',
+            'Update Employee Role',
             '[Exit]'
         ]
     })
@@ -210,6 +211,9 @@ const runInquiries = () => {
                 break;
             case 'Add Role':
                 addRole();
+                break;
+            case 'Update Employee Role':
+                updateEmployeeRole();
                 break;
             case '[Exit]':
                 return;
@@ -349,6 +353,46 @@ const addRole = () => {
         }
     })
     .then(() => {runInquiries()});
+}
+
+const updateEmployeeRole = () => {
+
+    inquirer
+    .prompt([
+        {
+            type: 'list', 
+            message: "What employee would you like to update?",
+            choices: currentEmployeeNames,
+            name: 'selectedEmployee'
+        },
+        {
+            type: 'list', 
+            message: "What is the employee's new role?",
+            choices: currentRoleTitles,
+            name: 'role'
+        },
+    ])
+    .then((answers)=>{
+        
+        connection.query(
+            'UPDATE employee SET ? WHERE ?',
+            [
+                {
+                    role_id: getRoleId(answers.role),
+                },
+                {
+                    id: getEmployeeId(answers.selectedEmployee)
+                }
+            ],
+            (err, res) => {
+                if (err) throw err;
+                console.log(`\nEmployee added!\n`);
+            }
+        );
+
+    })
+    .then(() => {runInquiries()});
+
 }
 
 //-----HELPER FUNCTIONS-----
