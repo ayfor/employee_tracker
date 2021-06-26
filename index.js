@@ -16,6 +16,8 @@ const connection = mysql.createConnection({
     database: 'employees_db'
 });
 
+//-----SERVER REQUESTS-----
+
 const showEmployees = () => {
     //Construct query for complete employee information
     let query = 'SELECT employee.id, employee.first_name AS FirstName, employee.last_name AS LastName, manager.first_name AS ManagerFirstName, manager.last_name AS ManagerLastName, role.title AS Title , role.salary AS Salary FROM employee ';
@@ -66,12 +68,7 @@ const showDepartments = () => {
     })
 }
 
-connection.connect((err)=>{
-    if(err) throw err;
-    console.log(`Connected as id ${connection.threadId}\n`);
-    
-})
-
+//-----INQUIRER PROMPTS-----
 
 const runInquiries = () => {
     inquirer
@@ -98,9 +95,17 @@ const runInquiries = () => {
             case 'View Roles':
                 showRoles();
                 break;
-                
+
             default:
                 break;
         }
     })
 }
+
+//-----INIT-----
+
+connection.connect((err)=>{
+    if(err) throw err;
+    console.log(`Connected as id ${connection.threadId}\n`);
+    
+})
