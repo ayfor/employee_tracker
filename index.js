@@ -26,6 +26,10 @@ var currentDepartments = [];
 
 var currentDepartmentNames = [];
 
+var currentEmployees = [];
+
+var currentEmployeeNames = [];
+
 //-----SERVER REQUESTS-----
 
 const showEmployees = () => {
@@ -99,9 +103,6 @@ const updateRoles = () => {
                 responseArray.forEach(element => {
                     currentRoleTitles.push(element.title)
                 });  
-
-                // console.log(currentRoles);
-                // console.log(currentRoleTitles);
             }
         }
     );
@@ -126,9 +127,40 @@ const updateDepartments = () => {
                 responseArray.forEach(element => {
                     currentDepartmentNames.push(element.name)
                 });  
-                 
-                // console.log(currentDepartments);
-                // console.log(currentDepartmentNames);
+            }
+        }
+    );
+}
+
+
+const updateEmployees = () => {
+    connection.query(
+        'SELECT * FROM employee',
+        (err, res) => {
+            if(err){
+                throw err;
+            }else{
+                let response = JSON.stringify(res);
+                let responseArray = JSON.parse(response);
+
+                currentEmployees = [];
+                currentEmployeeNames = [];
+
+                responseArray.forEach(element => {
+                    let employee = {};
+                    let name = element.first_name +" "+ element.last_name;
+                    let id = element.id;
+
+                    employee.name = name;
+                    employee.id = id;
+
+                    currentEmployeeNames.push(name);
+                    currentEmployees.push(employee);
+                });  
+
+                //Add null selection to current employee names
+                currentEmployeeNames.push("None");
+                
             }
         }
     );
@@ -150,6 +182,7 @@ const runInquiries = () => {
             'View Employees',
             'View Departments',
             'View Roles',
+            'Add Employee',
             'Add Department',
             'Add Role',
             '[Exit]'
@@ -180,7 +213,6 @@ const runInquiries = () => {
                 break;
             case '[Exit]':
                 return;
-
             default:
                 break;
         }
@@ -189,11 +221,10 @@ const runInquiries = () => {
 }
 
 const addEmployee = () => {
-    let roles = []
 
     console.log('Adding Employee...');
     inquirer
-    .prompt(
+    .prompt([
         {
             type: 'input',
             message: "What is the employee's first name?",
@@ -207,12 +238,40 @@ const addEmployee = () => {
         {
             type: 'list', 
             message: "What is the employee's role?",
-            choices: roles,
+            choices: currentRoleTitles,
             name: 'role'
+        },
+        {
+            type: 'list', 
+            message: "Who is the manager of this employee?",
+            choices: currentEmployeeNames,
+            name: 'manager'
+        },
+
+    ])
+    .then((answers)=>{
+        if((answers.firstName && !(answers.firstName===""))&&(answers.lastName && !(answers.lastName===""))){
+
+            connection.query(
+                'INSERT INTO employee SET ?',
+                {
+                  first_name: answers.firstName,
+                  last_name: answers.lastName,
+                  role_id: getRoleId(answers.role),
+                  manager_id: getEmployeeId(answers.manager)
+                },
+                (err, res) => {
+                  if (err) throw err;
+                  console.log(`Employee added!\n`);
+                }
+            );
+
+
+        }else{
+            console.error("Invalid Employee Name. Please start the application again.");
         }
-
-
-    )
+    })
+    .then(() => {runInquiries()});
 }
 
 const addDepartment = () => {
@@ -286,7 +345,7 @@ const addRole = () => {
 
 
         }else{
-            console.error("Invalid Deparment Name. Please start the application again.");
+            console.error("Invalid Role Name. Please start the application again.");
         }
     })
     .then(() => {runInquiries()});
@@ -297,15 +356,33 @@ const addRole = () => {
 const updatePersistingData = () => {
     updateDepartments();
     updateRoles();
+    updateEmployees();
 }
 
 const getDepartmentId = (departmentName) => {
-
     for (const department of currentDepartments) {
         if(departmentName === department.name){
             return department.id;
         }
     }
+}
+
+const getRoleId = (roleTitle) => {
+    for (const role of currentRoles) {
+        if(roleTitle === role.title){
+            return role.id;
+        }
+    }
+}
+
+const getEmployeeId = (employeeName) => {
+    for (const employee of currentEmployees){
+        if(employeeName === employee.name){
+            return employee.id;
+        }
+    }
+
+    return null;
 }
 
 //-----INIT-----
