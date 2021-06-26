@@ -262,7 +262,7 @@ const addEmployee = () => {
                 },
                 (err, res) => {
                   if (err) throw err;
-                  console.log(`Employee added!\n`);
+                  console.log(`\nEmployee added!\n`);
                 }
             );
 
@@ -293,7 +293,7 @@ const addDepartment = () => {
                 },
                 (err, res) => {
                   if (err) throw err;
-                  console.log(`Department added!\n`);
+                  console.log(`\nDepartment added!\n`);
                 }
             );
 
@@ -339,7 +339,7 @@ const addRole = () => {
                 },
                 (err, res) => {
                   if (err) throw err;
-                  console.log(`Role added!\n`);
+                  console.log(`\nRole added!\n`);
                 }
             );
 
