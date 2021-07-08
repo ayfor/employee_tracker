@@ -7,3 +7,9 @@ This application enables a user to create their own employee tracker using a bas
 Additionally, a schema file and seed SQL file are present in the repository can be used to set up the database and tables with sample data so you can hit the ground running!
 
 A video demonstrating the functionality of this application can be found [here](https://youtu.be/flB3oxDbJZA).
+
+## List of Technologies
+- Node.js
+- MySQL
+- Console.Table
+- Inquirer
